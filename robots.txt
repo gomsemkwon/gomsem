@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://gomsem.kr/sitemap.xml
+#DaumWebMasterTool:65b710ba7f4aeee729eff2d26975733df0f2c8ded5cb55ada0557e87a3e7b6f1:ObU+sFQzTvdXbIlCz16kkg==
