@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-lx4dJSxkzqAP0bs8UNd7hp/lSBKgzTYmTS0g78o2GUY=' 'sha256-aQekPZLma2qkVLBn5Lcmctps+rQTAIEEl8H6bLbrmX8=' 'sha256-yrVpfk+TkpCe1/pg0o1uQOuN1IAH2ktb1/cL99w/YzM='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.gomsem.kr https://api.odcloud.kr; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연봉 실수령액 계산기 - 월급 세후 실수령액·급여 계산기, 4대보험·근로소득세(2026 간이세액표)</title><link rel="icon" href="../favicon.ico" sizes="48x48"><link rel="icon" href="../assets/favicon.png" sizes="192x192" type="image/png"><link rel="apple-touch-icon" href="../assets/favicon.png"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<meta name="description" content="연봉이나 월급에서 국민연금·건강보험·장기요양보험·고용보험과 근로소득세·지방소득세를 빼 월 실수령액을 계산합니다. 2026년 3월부터 쓰는 근로소득 간이세액표, 공제대상가족 수, 8~20세 자녀, 원천징수 80·100·120%를 반영합니다.">
+<link rel="stylesheet" href="../assets/common.css">
+<style>.amt{position:relative}.amt input{width:100%;height:52px;padding:0 44px 0 16px;font-size:1.25rem;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.amt:after{content:"\c6d0";position:absolute;right:16px;top:50%;translate:0 -50%;color:var(--ink-2);font-size:1rem;pointer-events:none}.amt.n:after{content:"\ba85"}.read{min-height:1.3em;margin-top:-8px;text-align:right;font-size:.8125rem;color:var(--ink-3);font-variant-numeric:tabular-nums}.stack{display:grid;gap:14px}.stack .field{margin:0}.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field small{font-weight:400;color:var(--ink-3)}.field>.seg{justify-self:start;max-width:100%}.res{display:grid}.res>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line-soft)}.res>div:first-child{padding-top:2px}.res>div:last-child{border-bottom:0}.res span{font-size:.9375rem;color:var(--ink-2)}.res small{display:block;font-size:.75rem;color:var(--ink-3)}.res b{font-size:1.0625rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap;text-align:right}.res>div.key b{font-size:1.1875rem;font-weight:700;color:var(--ink)}.res>div.sum b{font-size:1.375rem;color:var(--info);font-weight:800}.law{margin-top:14px;font-size:.8125rem;color:var(--ink-3);word-break:keep-all}.rt{margin-top:32px;max-width:760px}.rt h2{font-size:1.125rem;margin:0 0 10px}.rt table{width:100%;border-collapse:collapse;font-size:.9375rem;font-variant-numeric:tabular-nums}.rt th,.rt td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:left}.rt th{color:var(--ink-3);font-weight:600;font-size:.8125rem}.work{grid-template-columns:minmax(0,460px) minmax(340px,460px)}@media (max-width: 959px){.work{grid-template-columns:minmax(0,1fr);max-width:560px}}@media (max-width: 720px){.res>div.sum b{font-size:1.1875rem}.rt th,.rt td{padding:8px 6px;font-size:.875rem}}</style>
+<link rel="canonical" href="https://gomsem.kr/pay/">
+<meta property="og:url" content="https://gomsem.kr/pay/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="곰셈의 세무도구모음">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="연봉 실수령액 계산기 - 월급 세후 실수령액·급여 계산기, 4대보험·근로소득세(2026 간이세액표)">
+<meta property="og:description" content="연봉이나 월급에서 국민연금·건강보험·장기요양보험·고용보험과 근로소득세·지방소득세를 빼 월 실수령액을 계산합니다. 2026년 3월부터 쓰는 근로소득 간이세액표, 공제대상가족 수, 8~20세 자녀, 원천징수 80·100·120%를 반영합니다.">
+<meta property="og:image" content="https://gomsem.kr/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "연봉 실수령액 계산기", "description": "연봉이나 월급에서 국민연금·건강보험·장기요양보험·고용보험과 근로소득세·지방소득세를 빼 월 실수령액을 계산합니다. 2026년 3월부터 쓰는 근로소득 간이세액표, 공제대상가족 수, 8~20세 자녀, 원천징수 80·100·120%를 반영합니다.", "inLanguage": "ko", "applicationCategory": "BusinessApplication", "operatingSystem": "All", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}, "url": "https://gomsem.kr/pay/"}</script>
+</head>
+<body>
+<header class="site-head"><div class="in"><a class="brand" href="../" aria-label="곰셈 세무도구모음 처음으로"><picture><source srcset="../assets/logo-w.png" media="(prefers-color-scheme: dark)"><img src="../assets/logo.png" alt="곰셈" width="40" height="36"></picture><span>세무도구모음</span></a><nav class="site-nav" aria-label="도구"><a href="../ksic/">업종코드</a><details class="nav-more nav-cat"><summary>사업자 조회·감면<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div></details><details class="nav-more nav-cat"><summary>부가세·소득세<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div></details><details class="nav-more nav-cat"><summary>부동산·상속<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/">상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div></details><details class="nav-more nav-cat"><summary data-cur>월급·퇴직금<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../pay/" aria-current=page>연봉 실수령액</a><a href="../insure/">4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div></details><details class="nav-more nav-cat"><summary>투자·대출·생활<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></details><details class="nav-more nav-all"><summary>전체 메뉴<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><div class="col"><div class="grp"><p class="gt">업종</p><a href="../ksic/">업종코드</a></div><div class="grp"><p class="gt">사업자 조회·감면</p><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div></div><div class="grp"><p class="gt">부가세·소득세</p><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div><div class="grp"><p class="gt">부동산·상속</p><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/">상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div><div class="grp"><p class="gt">월급·퇴직금</p><a href="../pay/" aria-current=page>연봉 실수령액</a><a href="../insure/">4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div><div class="grp"><p class="gt">투자·대출·생활</p><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></div></details></nav><details class="m-menu"><summary aria-label="메뉴 열기"><svg class="i-open" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h14M3 10h14M3 14.5h14"/></svg><svg class="i-close" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>메뉴</summary><nav aria-label="도구"><a href="../ksic/">업종코드</a><div class="grp"><p class="gt">사업자 조회·감면</p><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div><div class="grp"><p class="gt">부가세·소득세</p><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div><div class="grp"><p class="gt">부동산·상속</p><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/">상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div><div class="grp"><p class="gt">월급·퇴직금</p><a href="../pay/" aria-current=page>연봉 실수령액</a><a href="../insure/">4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div><div class="grp"><p class="gt">투자·대출·생활</p><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></nav></details></div></header><script type="speculationrules">{"prefetch":[{"where":{"selector_matches":".site-nav a, .m-menu a, .tools a"},"eagerness":"immediate"}],"prerender":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script><script>if(top!==self){let t=!1;try{t=top.location.origin===location.origin}catch{}if(!t){document.documentElement.style.display="none";try{top.location.replace(location.href)}catch{}}}if(addEventListener("click",t=>{for(const a of document.querySelectorAll(".m-menu, .nav-more"))a.open&&!a.contains(t.target)&&(a.open=!1)}),matchMedia("(hover: hover) and (pointer: fine)").matches)for(const t of document.querySelectorAll(".nav-cat")){let a;t.onmouseenter=()=>{clearTimeout(a);for(const e of document.querySelectorAll(".nav-more[open]"))e!==t&&(e.open=!1);t.open=!0},t.onmouseleave=()=>{a=setTimeout(()=>t.open=!1,150)},t.firstChild.onclick=e=>{e.detail&&(e.preventDefault(),t.open=!0)}}for(const t of["pageswap","pagereveal"])addEventListener(t,a=>{const e=a.viewTransition;if(e)for(const o of[e.ready,e.finished,e.updateCallbackDone])o?.catch(()=>{})});const J="\u2060",fix=(t,a)=>(t=t.replace(/[^\s·ㆍ]+(?:[·ㆍ][^\s·ㆍ]+)+/g,e=>e.replace(/[⁠​]/g,"").length<=12?e.replace(/(?<=[^\s⁠​])([·ㆍ])(?=[^\s⁠​])/g,J+"$1"+J):e.replace(/([·ㆍ])⁠?(?!​)/g,"$1\u200B").replace(/(?<=[^\s⁠​])([·ㆍ])/g,J+"$1")).replace(/[^\s]{16,}/g,e=>e.replace(/[⁠​]/g,"").length<16?e:e.replace(/(조(?:의\d+)?|항)(?=제\d)/g,"$1\u200B")).replace(/»(?=[가-힣])/g,"\xBB"+J).replace(/(?<=\d)-(?=\d)/g,J+"-"+J).replace(/ (외|등)(?=$|[\s,.)])/g,"\xA0$1").replace(/«[^»]{1,16}»/g,e=>e.replace(/ /g,"\xA0")).replace(/(?<=[가-힣])\((?=[A-Z]{2,6}\))/g,J+"(").replace(/\([^()]{1,12}\)/g,e=>e.replace(/ /g,"\xA0")).replace(/(\d{4})\. (\d{1,2})\. (\d{1,2})\./g,"$1.\xA0$2.\xA0$3."),a?t.replace(/ ([^\s]+)$/,(e,o)=>o.replace(/[.,·)»」’”%~]/g,"").length<=2?"\xA0"+o:e):t),glue=t=>{const a=document.createTreeWalker(t,4);for(let e;e=a.nextNode();){if(e.parentElement?.closest("script,style,textarea,.rates"))continue;const o=fix(e.data,!e.parentElement?.closest(".site-head"));o!==e.data&&(e.data=o)}};new MutationObserver(t=>t.forEach(a=>a.addedNodes.forEach(glue))).observe(document.body,{childList:!0,subtree:!0}),addEventListener("DOMContentLoaded",()=>glue(document.body)),addEventListener("copy",t=>{const a=getSelection().toString();/[⁠ ​]/.test(a)&&(t.clipboardData.setData("text/plain",a.replace(/[⁠​]/g,"").replace(/ /g," ")),t.preventDefault())});</script>
+<main class="page">
+  <div class="page-head">
+    <h1>연봉 실수령액 계산기</h1>
+  </div>
+
+  <div class="work">
+    <section class="card stack">
+      <div class="field"><span>입력 기준</span><div class="seg" id="unit" role="group" aria-label="입력 기준">
+        <button type="button" data-u="y" aria-pressed="true">연봉</button><button type="button" data-u="m" aria-pressed="false">월급</button>
+      </div></div>
+      <label class="field"><span id="l-amt">연봉(세전)</span><div class="amt"><input type="text" id="amt" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      <p class="read" id="read"></p>
+      <label class="field"><span>월 비과세 급여 <small>식대 등</small></span><div class="amt"><input type="text" id="free" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      <div class="f2">
+        <label class="field"><span>공제대상가족 <small>본인 포함</small></span><div class="amt n"><input type="text" id="fam" inputmode="numeric" autocomplete="off" placeholder="1"></div></label>
+        <label class="field"><span>그중 8~20세 자녀</span><div class="amt n"><input type="text" id="kids" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      </div>
+      <div class="field"><span>원천징수 비율</span><div class="seg" id="pct" role="group" aria-label="원천징수 비율">
+        <button type="button" data-p="80" aria-pressed="false">80%</button><button type="button" data-p="100" aria-pressed="true">100%</button><button type="button" data-p="120" aria-pressed="false">120%</button>
+      </div></div>
+    </section>
+    <section class="card out" aria-live="polite">
+      <div class="res">
+        <div><span>월 급여 <small id="l-tx"></small></span><b id="r-month">–</b></div>
+        <div><span>국민연금 <small>4.75%</small></span><b id="r-np">–</b></div>
+        <div><span>건강보험 <small>3.595%</small></span><b id="r-hi">–</b></div>
+        <div><span>장기요양보험 <small>건강보험료의 13.14%</small></span><b id="r-ltc">–</b></div>
+        <div><span>고용보험 <small>0.9%</small></span><b id="r-ei">–</b></div>
+        <div><span>근로소득세 <small id="l-it">간이세액표</small></span><b id="r-it">–</b></div>
+        <div><span>지방소득세 <small>소득세의 10%</small></span><b id="r-lt">–</b></div>
+        <div class="key"><span>공제 합계</span><b id="r-ded">–</b></div>
+        <div class="sum"><span>월 실수령액</span><b id="r-net">–</b></div>
+        <div><span>연 실수령액 <small>월 실수령액 × 12</small></span><b id="r-year">–</b></div>
+      </div>
+      <p class="law">소득세법 제134조제1항, 시행령 제194조제1항, 별표 2(근로소득 간이세액표, 2026. 3. 1. 이후 원천징수분), 지방세법 제103조의13제1항, 국민연금법 제88조제3항·부칙(제20903호) 제4조제1항, 시행령 제5조, 보건복지부 고시 제2026-31호, 국민건강보험법 제76조제1항, 시행령 제44조제1항, 보건복지부 고시 제2025-222호, 노인장기요양보험법 제9조제1항·부칙(제21690호) 제3조, 시행령 제4조, 고용보험료징수법 제13조제2항, 시행령 제12조제1항제2호. 보험료는 10원 미만을 버려 계산했습니다. 60세 이상 국민연금 제외, 65세 이후 새로 고용된 사람의 고용보험 제외는 넣지 않았습니다. 비과세 급여는 넣은 금액을 그대로 빼고 항목별 한도는 따지지 않았습니다. 2027년 1월부터 국민연금 근로자 부담은 5%입니다(부칙 제20903호 제4조제1항).</p>
+    </section>
+  </div>
+  <section class="rt">
+    <h2>연봉별 월 실수령액</h2>
+    <table>
+      <thead><tr><th>연봉</th><th>4대보험</th><th>소득세·지방소득세</th><th>월 실수령액</th></tr></thead>
+      <tbody>
+        <tr><td>2,000만원</td><td>161,900원</td><td>13,440원</td><td>1,491,326원</td></tr>
+        <tr><td>2,500만원</td><td>202,410원</td><td>24,290원</td><td>1,856,633원</td></tr>
+        <tr><td>3,000만원</td><td>242,920원</td><td>39,160원</td><td>2,217,920원</td></tr>
+        <tr><td>3,500만원</td><td>283,370원</td><td>72,840원</td><td>2,560,456원</td></tr>
+        <tr><td>4,000만원</td><td>323,870원</td><td>115,730원</td><td>2,893,733원</td></tr>
+        <tr><td>4,500만원</td><td>364,390원</td><td>172,210원</td><td>3,213,400원</td></tr>
+        <tr><td>5,000만원</td><td>404,840원</td><td>239,050원</td><td>3,522,776원</td></tr>
+        <tr><td>5,500만원</td><td>445,350원</td><td>304,210원</td><td>3,833,773원</td></tr>
+        <tr><td>6,000만원</td><td>485,860원</td><td>369,010원</td><td>4,145,130원</td></tr>
+        <tr><td>6,500만원</td><td>526,300원</td><td>430,720원</td><td>4,459,646원</td></tr>
+        <tr><td>7,000만원</td><td>566,800원</td><td>495,510원</td><td>4,771,023원</td></tr>
+        <tr><td>7,500만원</td><td>607,320원</td><td>616,370원</td><td>5,026,310원</td></tr>
+        <tr><td>8,000만원</td><td>644,160원</td><td>721,140원</td><td>5,301,366원</td></tr>
+        <tr><td>8,500만원</td><td>664,860원</td><td>825,930원</td><td>5,592,543원</td></tr>
+        <tr><td>9,000만원</td><td>685,560원</td><td>930,710원</td><td>5,883,730원</td></tr>
+        <tr><td>9,500만원</td><td>706,250원</td><td>1,030,500원</td><td>6,179,916원</td></tr>
+        <tr><td>1억원</td><td>726,950원</td><td>1,135,280원</td><td>6,471,103원</td></tr>
+      </tbody>
+    </table>
+    <p class="law">공제대상가족 1명(본인), 비과세 0원, 원천징수 100% 기준.</p>
+  </section>
+  <section class="rt">
+    <h2>2026년 4대보험 근로자 부담률</h2>
+    <table>
+      <thead><tr><th>보험</th><th>근로자 몫</th><th>기준</th></tr></thead>
+      <tbody>
+        <tr><td>국민연금</td><td>4.75%</td><td>기준소득월액 41만~659만원(2026년 7월~2027년 6월), 천원 미만 버림</td></tr>
+        <tr><td>건강보험</td><td>3.595%</td><td>보수월액 × 7.19%의 절반, 월 보험료 상한 4,591,740원</td></tr>
+        <tr><td>장기요양보험</td><td>건강보험료의 13.14%</td><td>장기요양보험료율 0.9448% ÷ 건강보험료율 7.19%, 소수점 다섯째 자리 반올림(2026년 11월분부터)</td></tr>
+        <tr><td>고용보험</td><td>0.9%</td><td>실업급여 보험료율 1.8%의 절반</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <p style="margin-top:20px"><a href="../itax/">종합소득세 세율</a> · <a href="../sev/">퇴직금 계산기</a> · <a href="../hourly/">주휴수당 계산기</a> · <a href="../insure/">4대보험 계산기</a> · <a href="../overtime/">연장·야간근로수당 계산기</a> · <a href="../pension/">연금저축 세액공제</a></p>
+</main>
+<footer class="site-foot"><div class="in"><details class="foot-src"><summary>전체 출처</summary><ul><li>국가데이터처 한국표준산업분류(통계청고시 제2024-203호), <a href="https://kssc.mods.go.kr:8443/ksscNew_web/index.jsp" target="_blank" rel="noopener">통계분류포털</a></li><li>국세청 2025년 귀속 단순경비율·기준경비율 고시</li><li>국세청 사업자등록 상태조회(공공데이터포털)</li><li>조달청 나라장터 사용자정보(공공데이터포털)</li><li>기획재정부 2026년 세제개편안(2026. 8. 3.)</li><li>재정경제부 입법예고(공고 제2026-211호, 제2026-215호)</li><li>국토교통부 조정대상지역 지정·해제 공고</li><li>법령 조문: <a href="https://www.law.go.kr" target="_blank" rel="noopener">국가법령정보센터</a></li></ul></details><p class="foot-links"><a href="../privacy/">개인정보 처리방침</a></p></div></footer>
+<script src="../assets/wage.js"></script>
+<script>const $=t=>document.getElementById(t),won=t=>`${Math.floor(t).toLocaleString("ko-KR")}\uC6D0`,num=t=>+t.value.replace(/[^\d]/g,"")||0;function kor(t){if(!t)return"";const o=Math.floor(t/1e8),e=Math.floor(t%1e8/1e4),n=t%1e4;return[o&&`${o.toLocaleString("ko-KR")}\uC5B5`,e&&`${e.toLocaleString("ko-KR")}\uB9CC`,n&&n.toLocaleString("ko-KR")].filter(Boolean).join(" ")+"\uC6D0"}function money(t,o){t.addEventListener("input",()=>{const e=t.value.slice(0,t.selectionStart).replace(/\D/g,"").length,n=t.value.replace(/[０-９]/g,r=>String.fromCharCode(r.charCodeAt(0)-65248)).replace(/\D/g,"").replace(/^0+(?=\d)/,"").slice(0,13);t.value=n?(+n).toLocaleString("ko-KR"):"";let a=0,c=0;for(;a<t.value.length&&c<e;)/\d/.test(t.value[a])&&c++,a++;t.setSelectionRange(a,a),o()})}let unit="y",pct=100;function calc(){const t=num($("amt")),o=unit==="y"?Math.floor(t/12):t;$("read").textContent=kor(t);const e=o?wage({month:o,free:Math.min(num($("free")),o),fam:num($("fam"))||1,kids:num($("kids")),pct}):null;for(const n of["month","np","hi","ltc","ei","it","lt","ded","net"])$(`r-${n}`).textContent=e?won(n==="month"?o:e[n]):"\u2013";$("r-year").textContent=e?won(e.net*12):"\u2013",$("l-tx").textContent=e&&e.tx!==o?`\uACFC\uC138 ${won(e.tx)}`:unit==="y"&&e?"\uC5F0\uBD09 \xF7 12":"",$("l-it").textContent=pct===100?"\uAC04\uC774\uC138\uC561\uD45C":`\uAC04\uC774\uC138\uC561\uD45C\uC758 ${pct}%`}function seg(t,o,e){$(t).addEventListener("click",n=>{const a=n.target.closest("button")?.dataset[o];if(a){e(a);for(const c of $(t).children)c.setAttribute("aria-pressed",c.dataset[o]===a);calc()}})}seg("unit","u",t=>{unit=t,$("l-amt").textContent=t==="y"?"\uC5F0\uBD09(\uC138\uC804)":"\uC6D4\uAE09(\uC138\uC804)"}),seg("pct","p",t=>{pct=+t});for(const t of["amt","free","fam","kids"])money($(t),calc);calc(),matchMedia("(min-width: 960px)").matches&&$("amt").focus();</script>
+</body>
+</html>

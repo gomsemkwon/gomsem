@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-lx4dJSxkzqAP0bs8UNd7hp/lSBKgzTYmTS0g78o2GUY=' 'sha256-aQekPZLma2qkVLBn5Lcmctps+rQTAIEEl8H6bLbrmX8=' 'sha256-ROo5zcNawOjNzx00YTYx9WTCO6EFKrHd1zzpSqvmeTE='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.gomsem.kr https://api.odcloud.kr; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4대보험 계산기(사대보험) 2026 - 근로자·사업주 부담금, 국민연금·건강·고용·산재</title><link rel="icon" href="../favicon.ico" sizes="48x48"><link rel="icon" href="../assets/favicon.png" sizes="192x192" type="image/png"><link rel="apple-touch-icon" href="../assets/favicon.png"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<meta name="description" content="월급으로 2026년 국민연금(4.75%)·건강보험(3.595%)·장기요양보험·고용보험·산재보험료를 근로자 몫과 사업주 몫으로 나눠 계산하고, 사업주의 총 인건비를 보여줍니다. 고용보험 사업주 요율은 상시근로자 수, 산재보험료율은 업종에 따라 다릅니다.">
+<link rel="stylesheet" href="../assets/common.css">
+<style>.amt{position:relative}.amt input{width:100%;height:52px;padding:0 44px 0 16px;font-size:1.25rem;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.amt:after{content:"\c6d0";position:absolute;right:16px;top:50%;translate:0 -50%;color:var(--ink-2);font-size:1rem;pointer-events:none}.stack{display:grid;gap:14px}.stack .field{margin:0}.field>.seg{justify-self:start;max-width:100%;flex-wrap:wrap}.field small{font-weight:400;color:var(--ink-3)}.read{font-size:.8125rem;color:var(--ink-3);text-align:right;min-height:1.2em}.ins{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.ins th,.ins td{padding:10px 4px;border-bottom:1px solid var(--line-soft);text-align:right;font-size:.9375rem;white-space:nowrap}.ins th:first-child,.ins td:first-child{text-align:left;white-space:normal;color:var(--ink-2)}.ins thead th{color:var(--ink-3);font-weight:600;font-size:.8125rem}.ins td small{display:block;font-size:.75rem;color:var(--ink-3)}.ins tfoot td{font-weight:700;border-bottom:0}.res{display:grid;margin-top:8px}.res>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line-soft)}.res>div:last-child{border-bottom:0}.res span{font-size:.9375rem;color:var(--ink-2)}.res small{display:block;font-size:.75rem;color:var(--ink-3)}.res b{font-size:1.0625rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap;text-align:right}.res>div.sum b{font-size:1.375rem;color:var(--info);font-weight:800}.law{margin-top:14px;font-size:.8125rem;color:var(--ink-3);word-break:keep-all}.rt{margin-top:32px;max-width:760px}.rt h2{font-size:1.125rem;margin:0 0 10px}.rt table{width:100%;border-collapse:collapse;font-size:.9375rem;font-variant-numeric:tabular-nums}.rt th,.rt td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:left}.rt th{color:var(--ink-3);font-weight:600;font-size:.8125rem}.work{grid-template-columns:minmax(0,440px) minmax(340px,480px)}@media (max-width: 959px){.work{grid-template-columns:minmax(0,1fr);max-width:560px}}@media (max-width: 720px){.res>div.sum b{font-size:1.1875rem}.rt th,.rt td{padding:8px 6px;font-size:.875rem}.ins th,.ins td{font-size:.875rem}}</style>
+<link rel="canonical" href="https://gomsem.kr/insure/">
+<meta property="og:url" content="https://gomsem.kr/insure/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="곰셈의 세무도구모음">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="4대보험 계산기(사대보험) 2026 - 근로자·사업주 부담금, 국민연금·건강·고용·산재">
+<meta property="og:description" content="월급으로 2026년 국민연금(4.75%)·건강보험(3.595%)·장기요양보험·고용보험·산재보험료를 근로자 몫과 사업주 몫으로 나눠 계산하고, 사업주의 총 인건비를 보여줍니다. 고용보험 사업주 요율은 상시근로자 수, 산재보험료율은 업종에 따라 다릅니다.">
+<meta property="og:image" content="https://gomsem.kr/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "4대보험 계산기(사대보험) 2026", "description": "월급으로 2026년 국민연금(4.75%)·건강보험(3.595%)·장기요양보험·고용보험·산재보험료를 근로자 몫과 사업주 몫으로 나눠 계산하고, 사업주의 총 인건비를 보여줍니다. 고용보험 사업주 요율은 상시근로자 수, 산재보험료율은 업종에 따라 다릅니다.", "inLanguage": "ko", "applicationCategory": "BusinessApplication", "operatingSystem": "All", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}, "url": "https://gomsem.kr/insure/"}</script>
+</head>
+<body>
+<header class="site-head"><div class="in"><a class="brand" href="../" aria-label="곰셈 세무도구모음 처음으로"><picture><source srcset="../assets/logo-w.png" media="(prefers-color-scheme: dark)"><img src="../assets/logo.png" alt="곰셈" width="40" height="36"></picture><span>세무도구모음</span></a><nav class="site-nav" aria-label="도구"><a href="../ksic/">업종코드</a><details class="nav-more nav-cat"><summary>사업자 조회·감면<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div></details><details class="nav-more nav-cat"><summary>부가세·소득세<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div></details><details class="nav-more nav-cat"><summary>부동산·상속<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/">상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div></details><details class="nav-more nav-cat"><summary data-cur>월급·퇴직금<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../pay/">연봉 실수령액</a><a href="../insure/" aria-current=page>4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div></details><details class="nav-more nav-cat"><summary>투자·대출·생활<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></details><details class="nav-more nav-all"><summary>전체 메뉴<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><div class="col"><div class="grp"><p class="gt">업종</p><a href="../ksic/">업종코드</a></div><div class="grp"><p class="gt">사업자 조회·감면</p><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div></div><div class="grp"><p class="gt">부가세·소득세</p><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div><div class="grp"><p class="gt">부동산·상속</p><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/">상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div><div class="grp"><p class="gt">월급·퇴직금</p><a href="../pay/">연봉 실수령액</a><a href="../insure/" aria-current=page>4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div><div class="grp"><p class="gt">투자·대출·생활</p><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></div></details></nav><details class="m-menu"><summary aria-label="메뉴 열기"><svg class="i-open" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h14M3 10h14M3 14.5h14"/></svg><svg class="i-close" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>메뉴</summary><nav aria-label="도구"><a href="../ksic/">업종코드</a><div class="grp"><p class="gt">사업자 조회·감면</p><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div><div class="grp"><p class="gt">부가세·소득세</p><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div><div class="grp"><p class="gt">부동산·상속</p><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/">상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div><div class="grp"><p class="gt">월급·퇴직금</p><a href="../pay/">연봉 실수령액</a><a href="../insure/" aria-current=page>4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div><div class="grp"><p class="gt">투자·대출·생활</p><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></nav></details></div></header><script type="speculationrules">{"prefetch":[{"where":{"selector_matches":".site-nav a, .m-menu a, .tools a"},"eagerness":"immediate"}],"prerender":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script><script>if(top!==self){let t=!1;try{t=top.location.origin===location.origin}catch{}if(!t){document.documentElement.style.display="none";try{top.location.replace(location.href)}catch{}}}if(addEventListener("click",t=>{for(const a of document.querySelectorAll(".m-menu, .nav-more"))a.open&&!a.contains(t.target)&&(a.open=!1)}),matchMedia("(hover: hover) and (pointer: fine)").matches)for(const t of document.querySelectorAll(".nav-cat")){let a;t.onmouseenter=()=>{clearTimeout(a);for(const e of document.querySelectorAll(".nav-more[open]"))e!==t&&(e.open=!1);t.open=!0},t.onmouseleave=()=>{a=setTimeout(()=>t.open=!1,150)},t.firstChild.onclick=e=>{e.detail&&(e.preventDefault(),t.open=!0)}}for(const t of["pageswap","pagereveal"])addEventListener(t,a=>{const e=a.viewTransition;if(e)for(const o of[e.ready,e.finished,e.updateCallbackDone])o?.catch(()=>{})});const J="\u2060",fix=(t,a)=>(t=t.replace(/[^\s·ㆍ]+(?:[·ㆍ][^\s·ㆍ]+)+/g,e=>e.replace(/[⁠​]/g,"").length<=12?e.replace(/(?<=[^\s⁠​])([·ㆍ])(?=[^\s⁠​])/g,J+"$1"+J):e.replace(/([·ㆍ])⁠?(?!​)/g,"$1\u200B").replace(/(?<=[^\s⁠​])([·ㆍ])/g,J+"$1")).replace(/[^\s]{16,}/g,e=>e.replace(/[⁠​]/g,"").length<16?e:e.replace(/(조(?:의\d+)?|항)(?=제\d)/g,"$1\u200B")).replace(/»(?=[가-힣])/g,"\xBB"+J).replace(/(?<=\d)-(?=\d)/g,J+"-"+J).replace(/ (외|등)(?=$|[\s,.)])/g,"\xA0$1").replace(/«[^»]{1,16}»/g,e=>e.replace(/ /g,"\xA0")).replace(/(?<=[가-힣])\((?=[A-Z]{2,6}\))/g,J+"(").replace(/\([^()]{1,12}\)/g,e=>e.replace(/ /g,"\xA0")).replace(/(\d{4})\. (\d{1,2})\. (\d{1,2})\./g,"$1.\xA0$2.\xA0$3."),a?t.replace(/ ([^\s]+)$/,(e,o)=>o.replace(/[.,·)»」’”%~]/g,"").length<=2?"\xA0"+o:e):t),glue=t=>{const a=document.createTreeWalker(t,4);for(let e;e=a.nextNode();){if(e.parentElement?.closest("script,style,textarea,.rates"))continue;const o=fix(e.data,!e.parentElement?.closest(".site-head"));o!==e.data&&(e.data=o)}};new MutationObserver(t=>t.forEach(a=>a.addedNodes.forEach(glue))).observe(document.body,{childList:!0,subtree:!0}),addEventListener("DOMContentLoaded",()=>glue(document.body)),addEventListener("copy",t=>{const a=getSelection().toString();/[⁠ ​]/.test(a)&&(t.clipboardData.setData("text/plain",a.replace(/[⁠​]/g,"").replace(/ /g," ")),t.preventDefault())});</script>
+<main class="page">
+  <div class="page-head">
+    <h1>4대보험 계산기</h1>
+  </div>
+
+  <div class="work">
+    <section class="card stack">
+      <label class="field"><span>월급 <small>세전</small></span><div class="amt"><input type="text" id="amt" inputmode="numeric" autocomplete="off" placeholder="0"></div><div class="read" id="read"></div></label>
+      <label class="field"><span>비과세 급여 <small>식대 월 20만원 등</small></span><div class="amt"><input type="text" id="free" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      <div class="field"><span>상시근로자 수 <small>고용보험 사업주 요율</small></span><div class="seg" id="size" role="group" aria-label="상시근로자 수">
+        <button type="button" data-v="25" aria-pressed="true">150명 미만</button><button type="button" data-v="45" aria-pressed="false">150명 이상 우선지원</button><button type="button" data-v="65" aria-pressed="false">150~999명</button><button type="button" data-v="85" aria-pressed="false">1,000명 이상</button>
+      </div></div>
+      <label class="field"><span>업종 <small>산재보험료율</small></span><select id="ind">
+        <option value="">업종을 고르세요</option>
+        <option value="185">석탄광업 및 채석업 18.5%</option>
+        <option value="57">석회석·금속·비금속·기타광업 5.7%</option>
+        <option value="16">식료품 제조업 1.6%</option>
+        <option value="11">섬유 및 섬유제품 제조업 1.1%</option>
+        <option value="20">목재 및 종이제품 제조업 2.0%</option>
+        <option value="9">출판·인쇄·제본업 0.9%</option>
+        <option value="13">화학 및 고무제품 제조업 1.3%</option>
+        <option value="7">의약품·화장품·연탄·석유제품 제조업 0.7%</option>
+        <option value="13">기계기구·금속·비금속광물제품 제조업 1.3%</option>
+        <option value="10">금속제련업 1.0%</option>
+        <option value="6">전기기계기구·정밀기구·전자제품 제조업 0.6%</option>
+        <option value="24">선박건조 및 수리업 2.4%</option>
+        <option value="12">수제품 및 기타제품 제조업 1.2%</option>
+        <option value="7">전기·가스·증기·수도사업 0.7%</option>
+        <option value="35">건설업 3.5%</option>
+        <option value="8">철도·항공·창고·운수관련서비스업 0.8%</option>
+        <option value="18">육상 및 수상운수업 1.8%</option>
+        <option value="9">통신업 0.9%</option>
+        <option value="58">임업 5.8%</option>
+        <option value="27">어업 2.7%</option>
+        <option value="20">농업 2.0%</option>
+        <option value="8">시설관리 및 사업지원 서비스업 0.8%</option>
+        <option value="8">기타의 각종사업 0.8%</option>
+        <option value="6">전문·보건·교육·여가관련 서비스업 0.6%</option>
+        <option value="8">도소매·음식·숙박업 0.8%</option>
+        <option value="7">부동산 및 임대업 0.7%</option>
+        <option value="9">국가 및 지방자치단체의 사업 0.9%</option>
+        <option value="5">금융 및 보험업 0.5%</option>
+      </select></label>
+    </section>
+    <section class="card out" aria-live="polite">
+      <table class="ins">
+        <thead><tr><th>보험</th><th>근로자</th><th>사업주</th></tr></thead>
+        <tbody>
+          <tr><td>국민연금 <small>각 4.75%</small></td><td id="e-np">–</td><td id="c-np">–</td></tr>
+          <tr><td>건강보험 <small>각 3.595%</small></td><td id="e-hi">–</td><td id="c-hi">–</td></tr>
+          <tr><td>장기요양보험 <small>건강보험료의 13.14%</small></td><td id="e-ltc">–</td><td id="c-ltc">–</td></tr>
+          <tr><td>고용보험 <small id="l-ei">0.9% · 1.15%</small></td><td id="e-ei">–</td><td id="c-ei">–</td></tr>
+          <tr><td>산재보험 <small id="l-ia">사업주만 부담</small></td><td>0원</td><td id="c-ia">–</td></tr>
+        </tbody>
+        <tfoot><tr><td>합계</td><td id="e-sum">–</td><td id="c-sum">–</td></tr></tfoot>
+      </table>
+      <div class="res">
+        <div><span>4대보험 합계 <small>근로자 + 사업주</small></span><b id="r-all">–</b></div>
+        <div class="sum"><span>사업주 총 인건비 <small>월급 + 사업주 부담</small></span><b id="r-cost">–</b></div>
+        <div><span>연간 사업주 부담 <small>× 12</small></span><b id="r-year">–</b></div>
+      </div>
+      <p class="law">국민연금법 제88조제3항·부칙(제20903호) 제4조제1항, 시행령 제5조, 보건복지부 고시 제2026-31호, 국민건강보험법 제76조제1항, 시행령 제44조제1항, 보건복지부 고시 제2025-222호, 노인장기요양보험법 제9조제1항·부칙(제21690호) 제3조, 시행령 제4조, 고용산재보험료징수법 제13조, 제14조, 시행령 제12조제1항, 고용노동부 고시 제2025-91호. 비과세 급여는 빼고 계산했고, 보험료는 10원 미만을 버렸습니다. 산재보험은 업종 요율에 출퇴근재해 요율 0.06%를 더했고, 임금채권부담금·석면피해구제분담금은 넣지 않았습니다. 60세 이상 국민연금 제외(국민연금법 제6조), 65세 이후 새로 고용된 사람의 실업급여 보험료 제외(고용산재보험료징수법 제13조제3항)도 넣지 않았습니다. 2027년 1월부터 국민연금은 근로자·사업주 각 5%입니다(부칙 제20903호 제4조제1항).</p>
+    </section>
+  </div>
+  <section class="rt">
+    <h2>2026년 4대보험 요율</h2>
+    <table>
+      <thead><tr><th>보험</th><th>근로자</th><th>사업주</th></tr></thead>
+      <tbody>
+        <tr><td>국민연금</td><td>4.75%</td><td>4.75%</td></tr>
+        <tr><td>건강보험</td><td>3.595%</td><td>3.595%</td></tr>
+        <tr><td>장기요양보험</td><td>건강보험료 × 13.14%</td><td>건강보험료 × 13.14%</td></tr>
+        <tr><td>고용보험 실업급여</td><td>0.9%</td><td>0.9%</td></tr>
+        <tr><td>고용안정·직업능력개발</td><td>–</td><td>150명 미만 0.25%, 150명 이상 우선지원대상 0.45%, 150~999명 0.65%, 1,000명 이상 0.85%</td></tr>
+        <tr><td>산재보험</td><td>–</td><td>업종별 0.5~18.5% + 출퇴근재해 0.06%</td></tr>
+      </tbody>
+    </table>
+    <p class="law">국민연금 기준소득월액은 41만원~659만원(2026. 7.~2027. 6.)이고, 건강보험료는 월 10,080원~4,591,740원 안에서 냅니다.</p>
+  </section>
+  <p style="margin-top:20px"><a href="../pay/">연봉 실수령액 계산기</a> · <a href="../minwage/">최저임금 계산기</a> · <a href="../sev/">퇴직금 계산기</a> · <a href="../dependent/">건강보험 피부양자 조건</a></p>
+</main>
+<footer class="site-foot"><div class="in"><details class="foot-src"><summary>전체 출처</summary><ul><li>국가데이터처 한국표준산업분류(통계청고시 제2024-203호), <a href="https://kssc.mods.go.kr:8443/ksscNew_web/index.jsp" target="_blank" rel="noopener">통계분류포털</a></li><li>국세청 2025년 귀속 단순경비율·기준경비율 고시</li><li>국세청 사업자등록 상태조회(공공데이터포털)</li><li>조달청 나라장터 사용자정보(공공데이터포털)</li><li>기획재정부 2026년 세제개편안(2026. 8. 3.)</li><li>재정경제부 입법예고(공고 제2026-211호, 제2026-215호)</li><li>국토교통부 조정대상지역 지정·해제 공고</li><li>법령 조문: <a href="https://www.law.go.kr" target="_blank" rel="noopener">국가법령정보센터</a></li></ul></details><p class="foot-links"><a href="../privacy/">개인정보 처리방침</a></p></div></footer>
+<script src="../assets/wage.js"></script>
+<script>const $=t=>document.getElementById(t),won=t=>`${Math.floor(t).toLocaleString("ko-KR")}\uC6D0`,num=t=>+t.value.replace(/[^\d]/g,"")||0;function kor(t){if(!t)return"";const o=Math.floor(t/1e8),n=Math.floor(t%1e8/1e4),e=t%1e4;return[o&&`${o.toLocaleString("ko-KR")}\uC5B5`,n&&`${n.toLocaleString("ko-KR")}\uB9CC`,e&&e.toLocaleString("ko-KR")].filter(Boolean).join(" ")+"\uC6D0"}function money(t,o){t.addEventListener("input",()=>{const n=t.value.slice(0,t.selectionStart).replace(/\D/g,"").length,e=t.value.replace(/[０-９]/g,i=>String.fromCharCode(i.charCodeAt(0)-65248)).replace(/\D/g,"").replace(/^0+(?=\d)/,"").slice(0,10);t.value=e?(+e).toLocaleString("ko-KR"):"";let c=0,a=0;for(;c<t.value.length&&a<n;)/\d/.test(t.value[c])&&a++,c++;t.setSelectionRange(c,c),o()})}function insure(t,o,n){const e=wins(t),c=t10(t*(90+o)/1e4),a=n===""?null:t10(t*(+n*10+6)/1e4),i={np:e.np,hi:e.hi,ltc:e.ltc,ei:c,ia:a},s=e.np+e.hi+e.ltc+e.ei,r=i.np+i.hi+i.ltc+i.ei+(a||0);return{e,c:i,es:s,cs:r}}{const t=insure(3e6,25,"8");console.assert(t.es===291520&&t.c.ei===34500&&t.c.ia===25800&&t.cs===324820&&insure(3e6,85,"").c.ia===null&&insure(3e6,85,"").c.ei===52500,"insure")}let size=25;function calc(){const t=num($("amt")),o=Math.max(0,t-Math.min(num($("free")),t)),n=$("ind").value;$("read").textContent=kor(t);const e=o?insure(o,size,n):null;for(const c of["np","hi","ltc","ei"])$(`e-${c}`).textContent=e?won(e.e[c]):"\u2013",$(`c-${c}`).textContent=e?won(e.c[c]):"\u2013";$("c-ia").textContent=e&&e.c.ia!==null?won(e.c.ia):"\u2013",$("l-ia").textContent=n===""?"\uC5C5\uC885\uC744 \uACE0\uB974\uBA74 \uACC4\uC0B0":`${(+n*10+6)/100}%(\uCD9C\uD1F4\uADFC\uC7AC\uD574 \uD3EC\uD568)`,$("l-ei").textContent=`0.9% \xB7 ${(90+size)/100}%`,$("e-sum").textContent=e?won(e.es):"\u2013",$("c-sum").textContent=e?won(e.cs):"\u2013",$("r-all").textContent=e?won(e.es+e.cs):"\u2013",$("r-cost").textContent=e?won(t+e.cs):"\u2013",$("r-year").textContent=e?won(e.cs*12):"\u2013"}$("size").addEventListener("click",t=>{const o=t.target.closest("button")?.dataset.v;if(o){size=+o;for(const n of $("size").children)n.setAttribute("aria-pressed",n.dataset.v===o);calc()}}),$("ind").addEventListener("change",calc);for(const t of["amt","free"])money($(t),calc);calc(),matchMedia("(min-width: 960px)").matches&&$("amt").focus();</script>
+</body>
+</html>
