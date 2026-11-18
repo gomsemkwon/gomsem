@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-lx4dJSxkzqAP0bs8UNd7hp/lSBKgzTYmTS0g78o2GUY=' 'sha256-aQekPZLma2qkVLBn5Lcmctps+rQTAIEEl8H6bLbrmX8=' 'sha256-aeep0iv4yogPFIbv8W88if3hfqH+MSwlZduGxA67DrE='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.gomsem.kr https://api.odcloud.kr; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>상속세 계산기 - 상속세율·면제한도(일괄공제·배우자공제)</title><link rel="icon" href="../favicon.ico" sizes="48x48"><link rel="icon" href="../assets/favicon.png" sizes="192x192" type="image/png"><link rel="apple-touch-icon" href="../assets/favicon.png"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<meta name="description" content="상속재산과 상속인 구성으로 상속세를 계산합니다. 일괄공제 5억원, 배우자 상속공제(5억~30억, 법정상속분 한도), 금융재산 상속공제, 10년 이내 사전증여 합산과 증여세액공제, 신고세액공제 3%를 반영하고 상속세율표를 함께 싣습니다.">
+<link rel="stylesheet" href="../assets/common.css">
+<style>.amt{position:relative}.amt input{width:100%;height:52px;padding:0 44px 0 16px;font-size:1.25rem;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.amt:after{content:"\c6d0";position:absolute;right:16px;top:50%;translate:0 -50%;color:var(--ink-2);font-size:1rem;pointer-events:none}.amt.n:after{content:"\ba85"}.read{min-height:1.3em;margin-top:-8px;text-align:right;font-size:.8125rem;color:var(--ink-3);font-variant-numeric:tabular-nums}.stack{display:grid;gap:14px}.stack .field{margin:0}.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field small{font-weight:400;color:var(--ink-3)}.field>.seg{justify-self:start;max-width:100%}.res{display:grid}.res>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line-soft)}.res>div:first-child{padding-top:2px}.res>div:last-child{border-bottom:0}.res>div[hidden]{display:none}.res span{font-size:.9375rem;color:var(--ink-2)}.res small{display:block;font-size:.75rem;color:var(--ink-3)}.res b{font-size:1.0625rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap;text-align:right}.res>div.sub span{padding-left:12px;font-size:.875rem}.res>div.sub b{font-size:.9375rem;font-weight:500}.res>div.sum b{font-size:1.375rem;color:var(--info);font-weight:800}.law{margin-top:14px;font-size:.8125rem;color:var(--ink-3);word-break:keep-all}.tag{margin-top:10px;font-size:.875rem;color:var(--ok)}.rt{margin-top:32px;max-width:760px}.rt h2{font-size:1.125rem;margin:0 0 10px}.rt table{width:100%;border-collapse:collapse;font-size:.9375rem;font-variant-numeric:tabular-nums}.rt th,.rt td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:left}.rt th{color:var(--ink-3);font-weight:600;font-size:.8125rem}.work{grid-template-columns:minmax(0,480px) minmax(340px,460px)}@media (max-width: 959px){.work{grid-template-columns:minmax(0,1fr);max-width:560px}}@media (max-width: 480px){.f2{grid-template-columns:minmax(0,1fr)}}@media (max-width: 720px){.res>div.sum b{font-size:1.1875rem}.rt th,.rt td{padding:8px 6px;font-size:.875rem}}</style>
+<link rel="canonical" href="https://gomsem.kr/inherit/">
+<meta property="og:url" content="https://gomsem.kr/inherit/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="곰셈의 세무도구모음">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="상속세 계산기 - 상속세율·면제한도(일괄공제·배우자공제)">
+<meta property="og:description" content="상속재산과 상속인 구성으로 상속세를 계산합니다. 일괄공제 5억원, 배우자 상속공제(5억~30억, 법정상속분 한도), 금융재산 상속공제, 10년 이내 사전증여 합산과 증여세액공제, 신고세액공제 3%를 반영하고 상속세율표를 함께 싣습니다.">
+<meta property="og:image" content="https://gomsem.kr/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "상속세 계산기", "description": "상속재산과 상속인 구성으로 상속세를 계산합니다. 일괄공제 5억원, 배우자 상속공제(5억~30억, 법정상속분 한도), 금융재산 상속공제, 10년 이내 사전증여 합산과 증여세액공제, 신고세액공제 3%를 반영하고 상속세율표를 함께 싣습니다.", "inLanguage": "ko", "applicationCategory": "BusinessApplication", "operatingSystem": "All", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}, "url": "https://gomsem.kr/inherit/"}</script>
+</head>
+<body>
+<header class="site-head"><div class="in"><a class="brand" href="../" aria-label="곰셈 세무도구모음 처음으로"><picture><source srcset="../assets/logo-w.png" media="(prefers-color-scheme: dark)"><img src="../assets/logo.png" alt="곰셈" width="40" height="36"></picture><span>세무도구모음</span></a><nav class="site-nav" aria-label="도구"><a href="../ksic/">업종코드</a><details class="nav-more nav-cat"><summary>사업자 조회·감면<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div></details><details class="nav-more nav-cat"><summary>부가세·소득세<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div></details><details class="nav-more nav-cat"><summary data-cur>부동산·상속<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/" aria-current=page>상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div></details><details class="nav-more nav-cat"><summary>월급·퇴직금<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../pay/">연봉 실수령액</a><a href="../insure/">4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div></details><details class="nav-more nav-cat"><summary>투자·대출·생활<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></details><details class="nav-more nav-all"><summary>전체 메뉴<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary><div class="pop"><div class="col"><div class="grp"><p class="gt">업종</p><a href="../ksic/">업종코드</a></div><div class="grp"><p class="gt">사업자 조회·감면</p><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div></div><div class="grp"><p class="gt">부가세·소득세</p><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div><div class="grp"><p class="gt">부동산·상속</p><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/" aria-current=page>상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div><div class="grp"><p class="gt">월급·퇴직금</p><a href="../pay/">연봉 실수령액</a><a href="../insure/">4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div><div class="grp"><p class="gt">투자·대출·생활</p><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></div></details></nav><details class="m-menu"><summary aria-label="메뉴 열기"><svg class="i-open" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h14M3 10h14M3 14.5h14"/></svg><svg class="i-close" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>메뉴</summary><nav aria-label="도구"><a href="../ksic/">업종코드</a><div class="grp"><p class="gt">사업자 조회·감면</p><a href="../benefit/">업종별 세제혜택</a><a href="../bizstatus/">사업자번호 조회</a><a href="../smb/">소기업·소상공인</a><a href="../sunset/">일몰·시행일</a></div><div class="grp"><p class="gt">부가세·소득세</p><a href="../vat/">부가세 계산기</a><a href="../vatpre/">부가세 예정고지</a><a href="../itax/">종합소득세 세율</a><a href="../midpay/">종합소득세 중간예납</a><a href="../daily/">일용직 세금</a><a href="../eitc/">근로장려금</a><a href="../pension/">연금저축 세액공제</a><a href="../rent/">월세 세액공제</a></div><div class="grp"><p class="gt">부동산·상속</p><a href="../cgt/">양도세 계산기</a><a href="../acq/">취득세 계산기</a><a href="../proptax/">재산세 계산기</a><a href="../jongbu/">종부세 계산기</a><a href="../gift/">증여세 계산기</a><a href="../inherit/" aria-current=page>상속세 계산기</a><a href="../broker/">중개수수료</a><a href="../conv/">전월세 전환율</a></div><div class="grp"><p class="gt">월급·퇴직금</p><a href="../pay/">연봉 실수령액</a><a href="../insure/">4대보험 계산기</a><a href="../dependent/">건강보험 피부양자</a><a href="../hourly/">주휴수당 계산기</a><a href="../overtime/">연장·야간근로수당</a><a href="../minwage/">최저임금 계산기</a><a href="../leave/">연차 계산기</a><a href="../unemp/">실업급여 계산기</a><a href="../notice/">해고예고수당</a><a href="../parental/">육아휴직급여</a><a href="../sev/">퇴직금 계산기</a><a href="../rtax/">퇴직소득세</a></div><div class="grp"><p class="gt">투자·대출·생활</p><a href="../coin/">코인 세금</a><a href="../ostock/">해외주식 양도세</a><a href="../sectax/">증권거래세</a><a href="../loan/">대출이자 계산기</a><a href="../savings/">예금·적금 이자</a><a href="../car/">자동차세 계산기</a><a href="../carbuy/">자동차 취득세</a><a href="../days/">날짜 계산기</a><a href="../age/">만 나이 계산기</a><a href="../pyeong/">평수 계산기</a><a href="../percent/">퍼센트 계산기</a><a href="../chars/">글자수 세기</a></div></nav></details></div></header><script type="speculationrules">{"prefetch":[{"where":{"selector_matches":".site-nav a, .m-menu a, .tools a"},"eagerness":"immediate"}],"prerender":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script><script>if(top!==self){let t=!1;try{t=top.location.origin===location.origin}catch{}if(!t){document.documentElement.style.display="none";try{top.location.replace(location.href)}catch{}}}if(addEventListener("click",t=>{for(const a of document.querySelectorAll(".m-menu, .nav-more"))a.open&&!a.contains(t.target)&&(a.open=!1)}),matchMedia("(hover: hover) and (pointer: fine)").matches)for(const t of document.querySelectorAll(".nav-cat")){let a;t.onmouseenter=()=>{clearTimeout(a);for(const e of document.querySelectorAll(".nav-more[open]"))e!==t&&(e.open=!1);t.open=!0},t.onmouseleave=()=>{a=setTimeout(()=>t.open=!1,150)},t.firstChild.onclick=e=>{e.detail&&(e.preventDefault(),t.open=!0)}}for(const t of["pageswap","pagereveal"])addEventListener(t,a=>{const e=a.viewTransition;if(e)for(const o of[e.ready,e.finished,e.updateCallbackDone])o?.catch(()=>{})});const J="\u2060",fix=(t,a)=>(t=t.replace(/[^\s·ㆍ]+(?:[·ㆍ][^\s·ㆍ]+)+/g,e=>e.replace(/[⁠​]/g,"").length<=12?e.replace(/(?<=[^\s⁠​])([·ㆍ])(?=[^\s⁠​])/g,J+"$1"+J):e.replace(/([·ㆍ])⁠?(?!​)/g,"$1\u200B").replace(/(?<=[^\s⁠​])([·ㆍ])/g,J+"$1")).replace(/[^\s]{16,}/g,e=>e.replace(/[⁠​]/g,"").length<16?e:e.replace(/(조(?:의\d+)?|항)(?=제\d)/g,"$1\u200B")).replace(/»(?=[가-힣])/g,"\xBB"+J).replace(/(?<=\d)-(?=\d)/g,J+"-"+J).replace(/ (외|등)(?=$|[\s,.)])/g,"\xA0$1").replace(/«[^»]{1,16}»/g,e=>e.replace(/ /g,"\xA0")).replace(/(?<=[가-힣])\((?=[A-Z]{2,6}\))/g,J+"(").replace(/\([^()]{1,12}\)/g,e=>e.replace(/ /g,"\xA0")).replace(/(\d{4})\. (\d{1,2})\. (\d{1,2})\./g,"$1.\xA0$2.\xA0$3."),a?t.replace(/ ([^\s]+)$/,(e,o)=>o.replace(/[.,·)»」’”%~]/g,"").length<=2?"\xA0"+o:e):t),glue=t=>{const a=document.createTreeWalker(t,4);for(let e;e=a.nextNode();){if(e.parentElement?.closest("script,style,textarea,.rates"))continue;const o=fix(e.data,!e.parentElement?.closest(".site-head"));o!==e.data&&(e.data=o)}};new MutationObserver(t=>t.forEach(a=>a.addedNodes.forEach(glue))).observe(document.body,{childList:!0,subtree:!0}),addEventListener("DOMContentLoaded",()=>glue(document.body)),addEventListener("copy",t=>{const a=getSelection().toString();/[⁠ ​]/.test(a)&&(t.clipboardData.setData("text/plain",a.replace(/[⁠​]/g,"").replace(/ /g," ")),t.preventDefault())});</script>
+<main class="page">
+  <div class="page-head">
+    <h1>상속세 계산기</h1>
+  </div>
+
+  <div class="work">
+    <section class="card stack">
+      <label class="field"><span>상속재산가액 <small>부동산·예금·주식 등 합계</small></span><div class="amt"><input type="text" id="est" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      <p class="read" id="read"></p>
+      <label class="field"><span>그중 순금융재산 <small>예금·주식 − 금융채무</small></span><div class="amt"><input type="text" id="fin" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      <label class="field"><span>채무·공과금</span><div class="amt"><input type="text" id="debt" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      <div class="f2">
+        <label class="field"><span>장례비 <small>500만원 미만이면 500만원</small></span><div class="amt"><input type="text" id="fun" inputmode="numeric" autocomplete="off" placeholder="5,000,000"></div></label>
+        <label class="field"><span>봉안시설·자연장지</span><div class="amt"><input type="text" id="bong" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      </div>
+      <div class="field"><span>배우자</span><div class="seg" id="sp" role="group" aria-label="배우자">
+        <button type="button" data-s="1" aria-pressed="true">있음</button><button type="button" data-s="0" aria-pressed="false">없음</button>
+      </div></div>
+      <label class="field" id="spBox"><span>배우자가 실제 상속받는 금액 <small>비우면 법정상속분</small></span><div class="amt"><input type="text" id="spAmt" inputmode="numeric" autocomplete="off" placeholder="법정상속분"></div></label>
+      <div class="f2">
+        <label class="field"><span>자녀 수</span><div class="amt n"><input type="text" id="kids" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+        <label class="field" id="parBox"><span>부모 <small>자녀 없을 때 상속인</small></span><div class="amt n"><input type="text" id="par" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      </div>
+      <label class="field"><span>10년 이내 상속인에게 한 증여 <small>증여재산가액, 수증 상속인 1</small></span><div class="amt"><input type="text" id="pre" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      <div class="f2">
+        <label class="field"><span>당시 공제받은 증여재산공제</span><div class="amt"><input type="text" id="preDed" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+        <label class="field"><span>당시 증여세 산출세액</span><div class="amt"><input type="text" id="preTax" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+      </div>
+      <div class="stack" id="g2" hidden>
+        <label class="field"><span>다른 상속인에게 한 증여 <small>증여재산가액, 수증 상속인 2</small></span><div class="amt"><input type="text" id="pre2" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+        <div class="f2">
+          <label class="field"><span>당시 공제받은 증여재산공제</span><div class="amt"><input type="text" id="preDed2" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+          <label class="field"><span>당시 증여세 산출세액</span><div class="amt"><input type="text" id="preTax2" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+        </div>
+      </div>
+      <div class="stack" id="g3" hidden>
+        <label class="field"><span>다른 상속인에게 한 증여 <small>증여재산가액, 수증 상속인 3</small></span><div class="amt"><input type="text" id="pre3" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+        <div class="f2">
+          <label class="field"><span>당시 공제받은 증여재산공제</span><div class="amt"><input type="text" id="preDed3" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+          <label class="field"><span>당시 증여세 산출세액</span><div class="amt"><input type="text" id="preTax3" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+        </div>
+      </div>
+      <div class="field"><span>상속세 과세표준 신고</span><div class="seg" id="rpt" role="group" aria-label="상속세 과세표준 신고">
+        <button type="button" data-v="in" aria-pressed="true">신고기한 내 신고</button><button type="button" data-v="late" aria-pressed="false">기한후신고</button><button type="button" data-v="none" aria-pressed="false">무신고</button>
+      </div></div>
+    </section>
+    <section class="card out" aria-live="polite">
+      <div class="res">
+        <div><span>상속세 과세가액 <small>상속재산 − 채무·장례비 등 + 사전증여</small></span><b id="r-tot">–</b></div>
+        <div><span>상속공제 합계 <small id="l-cap"></small></span><b id="r-ded">–</b></div>
+        <div class="sub"><span id="l-lump">일괄공제</span><b id="r-lump">–</b></div>
+        <div class="sub" id="w-sp"><span>배우자 상속공제</span><b id="r-sp">–</b></div>
+        <div class="sub" id="w-fin" hidden><span>금융재산 상속공제</span><b id="r-fin">–</b></div>
+        <div><span>과세표준</span><b id="r-base">–</b></div>
+        <div><span>산출세액 <small id="l-rate"></small></span><b id="r-calc">–</b></div>
+        <div id="w-cr" hidden><span>증여세액공제</span><b id="r-cr">–</b></div>
+        <div><span>신고세액공제 <small>3%</small></span><b id="r-rep">–</b></div>
+        <div class="sum"><span>납부할 상속세</span><b id="r-pay">–</b></div>
+      </div>
+      <p class="tag" id="tag" hidden></p>
+      <p class="law">상속세 및 증여세법 제3조의2제1항, 제13조, 제14조, 제18조, 제19조, 제20조제1항제1호, 제21조, 제22조, 제24조, 제25조, 제26조, 제28조, 제69조제1항, 시행령 제3조제1항, 제9조제2항, 제17조제1항, 제20조의4, 국세기본법 제45조의3, 민법 제1009조, 국고금 관리법 제47조. 미성년자·연로자·장애인 공제, 동거주택·가업·영농 상속공제, 세대생략 할증, 상속인 아닌 사람에게 한 증여·유증, 네 번째 수증 상속인부터의 증여, 무신고·기한후신고 가산세 제외. 배우자 상속공제는 배우자상속재산분할기한까지 분할한 것으로 봄(제19조제2항). 배우자 상속공제 한도 계산의 배우자 사전증여 과세표준(제19조제1항제1호 산식)은 0으로 봄. 한도가 5억원 미만이면 5억원 공제(제19조제4항, 재산상속46014-508, 2000. 4. 25.).</p>
+    </section>
+  </div>
+
+  <section class="rt">
+    <h2>상속세율·증여세율</h2>
+    <table>
+      <thead><tr><th>과세표준</th><th>세율</th><th>누진공제</th></tr></thead>
+      <tbody>
+        <tr><td>1억원 이하</td><td>10%</td><td>–</td></tr>
+        <tr><td>1억원 초과 5억원 이하</td><td>20%</td><td>1천만원</td></tr>
+        <tr><td>5억원 초과 10억원 이하</td><td>30%</td><td>6천만원</td></tr>
+        <tr><td>10억원 초과 30억원 이하</td><td>40%</td><td>1억6천만원</td></tr>
+        <tr><td>30억원 초과</td><td>50%</td><td>4억6천만원</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="rt">
+    <h2>상속공제</h2>
+    <table>
+      <thead><tr><th>공제</th><th>금액</th></tr></thead>
+      <tbody>
+        <tr><td>일괄공제</td><td>5억원(기초공제 2억원 + 자녀 1명당 5천만원 등이 더 크면 그 금액, 배우자 단독 상속이면 일괄공제 없음)</td></tr>
+        <tr><td>배우자 상속공제</td><td>실제 상속받은 금액(법정상속분·30억원 한도), 5억원 미만이면 5억원</td></tr>
+        <tr><td>금융재산 상속공제</td><td>순금융재산 2천만원 이하는 전액, 초과하면 20%(최소 2천만원, 최대 2억원)</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <p style="margin-top:20px"><a href="../gift/">증여세 계산기</a> · <a href="../cgt/">양도세 계산기</a> · <a href="../acq/">취득세 계산기</a></p>
+<div class="static guide">
+  <div class="sec">
+    <h2>상속세 계산 순서</h2>
+    <ol>
+      <li>상속재산가액에서 상속개시일 현재의 공과금·장례비용·채무를 차감합니다(상속세 및 증여세법 제14조제1항). 제14조에 따른 금액이 상속재산의 가액을 초과하면 그 초과액은 없는 것으로 봅니다(제13조제1항).</li>
+      <li>상속개시일 전 10년 이내에 피상속인이 상속인에게 증여한 재산가액, 5년 이내에 상속인이 아닌 자에게 증여한 재산가액을 가산합니다. 이것이 상속세 과세가액입니다(제13조제1항제1호·제2호).</li>
+      <li>과세가액에서 상속공제를 합니다. 상속공제는 과세가액에서 선순위인 상속인이 아닌 자에게 유증등을 한 재산의 가액, 선순위인 상속인의 상속 포기로 그 다음 순위의 상속인이 상속받은 재산의 가액, 가산한 증여재산가액(증여재산공제 등을 받은 금액은 차감한 가액)을 차감한 금액을 한도로 합니다. 증여재산가액의 차감은 상속세 과세가액이 5억원을 초과하는 경우에만 적용합니다(제24조).</li>
+      <li>과세표준에 세율을 곱해 산출세액을 계산합니다. 과세표준이 50만원 미만이면 상속세를 부과하지 않습니다(제25조제2항).</li>
+      <li>상속재산에 가산한 증여재산에 대한 증여 당시의 증여세산출세액을 상속세산출세액에서 공제합니다. 상속세 과세가액이 5억원 이하이거나, 부과제척기간 만료로 증여세가 부과되지 않은 증여재산이면 공제하지 않습니다(제28조제1항).</li>
+      <li>증여재산의 수증자가 상속인이면 증여세액공제는 그 상속인 각자가 납부할 상속세액에 그 상속인의 상속세 과세표준 상당액에 대하여 가산한 증여재산의 과세표준이 차지하는 비율을 곱하여 계산한 금액을 한도로 상속인별로 계산합니다(제28조제2항 후단, 시행령 제20조의4). 각자가 납부할 상속세액은 상속세산출세액에 상속인별 상속세 과세표준 상당액이 상속세 과세표준에서 차지하는 비율을 곱한 금액이므로(제3조의2제1항, 시행령 제3조제1항), 상속인별 한도는 상속세산출세액 × 그 상속인에게 가산한 증여재산의 과세표준 ÷ 상속세 과세표준입니다.</li>
+      <li>제67조에 따라 신고기한까지 상속세 과세표준을 신고하면 산출세액에서 증여세액공제 등 공제·감면되는 금액을 공제한 금액의 3%를 신고세액공제로 공제합니다(제69조제1항). 국세기본법 제45조의3에 따른 기한후신고는 제67조에 따른 신고가 아니므로 신고세액공제를 적용하지 않습니다.</li>
+    </ol>
+  </div>
+  <div class="sec">
+    <h2>계산 예시</h2>
+    <p>상속인 배우자·자녀 2명, 상속재산가액 20억원 법정상속분대로 분할, 장례비용 500만원</p>
+    <div class="tbl-wrap"><table class="ex" data-ex='{"est": "2000000000", "kids": "2"}'><tbody>
+      <tr><th>상속세 과세가액</th><td data-out="r-tot">1,995,000,000원</td></tr>
+      <tr><th>일괄공제</th><td data-out="r-lump">500,000,000원</td></tr>
+      <tr><th>배우자 상속공제</th><td data-out="r-sp">857,142,857원</td></tr>
+      <tr><th>과세표준</th><td data-out="r-base">637,857,143원</td></tr>
+      <tr><th>산출세액</th><td data-out="r-calc">131,357,142원</td></tr>
+      <tr><th>신고세액공제</th><td data-out="r-rep">3,940,714원</td></tr>
+      <tr><th>납부할 상속세</th><td data-out="r-pay">127,416,420원</td></tr>
+    </tbody></table></div>
+    <p>같은 상속인, 상속재산가액 10억원, 상속개시일 5년 전 자녀 1명에게 증여한 재산가액 1억원(증여재산공제 5천만원, 증여세산출세액 500만원)</p>
+    <div class="tbl-wrap"><table class="ex" data-ex='{"est": "1000000000", "kids": "2", "pre": "100000000", "preDed": "50000000", "preTax": "5000000"}'><tbody>
+      <tr><th>상속세 과세가액</th><td data-out="r-tot">1,095,000,000원</td></tr>
+      <tr><th>상속공제 합계</th><td data-out="r-ded">1,000,000,000원</td></tr>
+      <tr><th>과세표준</th><td data-out="r-base">95,000,000원</td></tr>
+      <tr><th>산출세액</th><td data-out="r-calc">9,500,000원</td></tr>
+      <tr><th>증여세액공제</th><td data-out="r-cr">5,000,000원</td></tr>
+      <tr><th>납부할 상속세</th><td data-out="r-pay">4,365,000원</td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="sec">
+    <h2>상속세 과세표준 신고와 일괄공제</h2>
+    <p>상속인이나 수유자는 기초공제(제18조)와 그 밖의 인적공제(제20조제1항)를 합친 금액과 5억원 중 큰 금액으로 공제받을 수 있습니다. 다만, 제67조 또는 국세기본법 제45조의3에 따른 신고가 없으면 5억원을 공제합니다(제21조제1항). 무신고이면 기초공제와 자녀공제의 합계액이 5억원을 초과하더라도 5억원을 공제하고, 기한후신고를 한 경우에는 큰 금액으로 공제받을 수 있습니다.</p>
+    <p>피상속인의 배우자가 단독으로 상속받는 경우에는 제18조와 제20조제1항에 따른 공제액을 합친 금액으로만 공제합니다(제21조제2항).</p>
+    <p>상속인 자녀 2명, 상속재산가액 10억원, 장례비용 500만원, 무신고</p>
+    <div class="tbl-wrap"><table class="ex" data-ex='{"sp": "0", "est": "1000000000", "kids": "2", "rpt": "none"}'><tbody>
+      <tr><th>일괄공제</th><td data-out="r-lump">500,000,000원</td></tr>
+      <tr><th>과세표준</th><td data-out="r-base">495,000,000원</td></tr>
+      <tr><th>산출세액</th><td data-out="r-calc">89,000,000원</td></tr>
+      <tr><th>신고세액공제</th><td data-out="r-rep">0원</td></tr>
+      <tr><th>납부할 상속세</th><td data-out="r-pay">89,000,000원</td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="sec">
+    <h2>배우자 상속공제와 신고 기한</h2>
+    <p>배우자가 실제 상속받은 금액으로 공제받으려면 상속세과세표준신고기한의 다음날부터 9개월이 되는 날(배우자상속재산분할기한)까지 배우자의 상속재산을 분할해야 합니다. 등기·등록·명의개서 등이 필요한 재산은 그 등기·등록·명의개서 등이 된 것에 한정하고, 상속인은 분할사실을 그 기한까지 납세지 관할세무서장에게 신고합니다(제19조제2항).</p>
+    <p>소의 제기나 심판청구 등 부득이한 사유로 그 기한까지 분할할 수 없으면, 상속인이 그 사유를 분할기한까지 신고한 경우에만 분할기한(소송·심판청구는 종료된 날)의 다음날부터 6개월이 되는 날(분할기한의 다음날부터 6개월이 지나 과세표준과 세액의 결정이 있으면 그 결정일)까지 분할하여 신고한 것을 분할기한까지 분할한 것으로 봅니다(제19조제3항).</p>
+    <p>배우자가 실제 상속받은 금액이 없거나 5억원 미만이면 분할기한과 관계없이 5억원을 공제합니다(제19조제4항).</p>
+    <p>상속세 신고기한은 상속개시일이 속하는 달의 말일부터 6개월입니다. 피상속인이나 상속인이 외국에 주소를 둔 경우에는 9개월입니다(제67조제1항·제4항).</p>
+  </div>
+</div>
+</main>
+<footer class="site-foot"><div class="in"><details class="foot-src"><summary>전체 출처</summary><ul><li>국가데이터처 한국표준산업분류(통계청고시 제2024-203호), <a href="https://kssc.mods.go.kr:8443/ksscNew_web/index.jsp" target="_blank" rel="noopener">통계분류포털</a></li><li>국세청 2025년 귀속 단순경비율·기준경비율 고시</li><li>국세청 사업자등록 상태조회(공공데이터포털)</li><li>조달청 나라장터 사용자정보(공공데이터포털)</li><li>기획재정부 2026년 세제개편안(2026. 8. 3.)</li><li>재정경제부 입법예고(공고 제2026-211호, 제2026-215호)</li><li>국토교통부 조정대상지역 지정·해제 공고</li><li>법령 조문: <a href="https://www.law.go.kr" target="_blank" rel="noopener">국가법령정보센터</a></li></ul></details><p class="upd">최종 수정일 2026-11-18</p><p class="foot-links"><a href="../about/">사이트 소개</a> · <a href="../updates/">업데이트 기록</a> · <a href="../privacy/">개인정보 처리방침</a></p></div></footer>
+<script>const $=e=>document.getElementById(e),won=e=>`${Math.floor(e).toLocaleString("ko-KR")}\uC6D0`,num=e=>+e.value.replace(/[^\d]/g,"")||0;function kor(e){if(!e)return"";const t=Math.floor(e/1e8),n=Math.floor(e%1e8/1e4),s=e%1e4;return[t&&`${t.toLocaleString("ko-KR")}\uC5B5`,n&&`${n.toLocaleString("ko-KR")}\uB9CC`,s&&s.toLocaleString("ko-KR")].filter(Boolean).join(" ")+"\uC6D0"}function money(e,t){e.addEventListener("input",()=>{const n=e.value.slice(0,e.selectionStart).replace(/\D/g,"").length,s=e.value.replace(/[０-９]/g,l=>String.fromCharCode(l.charCodeAt(0)-65248)).replace(/\D/g,"").replace(/^0+(?=\d)/,"").slice(0,13);e.value=s?(+s).toLocaleString("ko-KR"):"";let a=0,p=0;for(;a<e.value.length&&p<n;)/\d/.test(e.value[a])&&p++,a++;e.setSelectionRange(a,a),t()})}const t10=e=>Math.floor(e/10)*10,BANDS=[[1e8,10,0],[5e8,20,1e7],[1e9,30,9e7],[3e9,40,24e7],[1/0,50,104e7]];function rate(e){const t=BANDS.findIndex(p=>e<=p[0]),n=t?BANDS[t-1][0]:0,[,s,a]=BANDS[t];return{r:s,t:Math.floor(a+(e-n)*s/100)}}function inherit(e){const t=e.gifts.filter(r=>r.pre),n=r=>Math.max(0,r.pre-r.preDed);e={...e,pre:t.reduce((r,o)=>r+o.pre,0)};const s=t.reduce((r,o)=>r+n(o),0),a=Math.max(0,e.est-e.debt),p=Math.min(Math.max(e.fun,5e6),1e7)+Math.min(e.bong,5e6),l=Math.max(0,a-p),i=l+e.pre,f=e.kids||e.par,g=f||!e.sp?e.rpt==="none"?5e8:Math.max(2e8+5e7*e.kids,5e8):2e8,x=e.sp?3:0,M=3+2*f,S=Math.floor((a+e.pre)*x/M),E=e.spAmt??Math.floor(a*x/M),b=e.sp?Math.max(5e8,Math.min(E,S,3e9)):0,u=Math.min(e.fin,a),k=u<=2e7?u:Math.min(Math.max(Math.floor(u*20/100),2e7),2e8),h=g+b+k,v=Math.max(0,i-(i>5e8?s:0)),A=Math.min(h,v),D=i-A,c=D<5e5?0:D,{r:L,t:d}=rate(c),m=i>5e8&&c?t.reduce((r,o)=>r+Math.min(o.preTax,Number(BigInt(d)*BigInt(n(o))/BigInt(c))),0):0,C=e.rpt==="in"?Math.floor((d-m)*3/100):0;return{alone:!f&&e.sp,tot:i,lump:g,spd:b,fin:k,sum:h,ded:A,capped:h>v,base:c,r:L,calc:d,cr:m,rep:C,pay:t10(Math.max(0,d-m-C))}}{const e=t=>inherit({est:0,fin:0,debt:0,fun:0,bong:0,sp:!0,spAmt:null,kids:2,par:0,gifts:[],rpt:"in",...t});console.assert(e({est:2e9,sp:!1,kids:7}).lump===55e7&&e({est:2e9,sp:!1,kids:7,rpt:"none"}).lump===5e8&&e({est:2e9,sp:!1,rpt:"late"}).rep===0&&e({est:6e8,kids:0,rpt:"none"}).lump===2e8&&e({est:15e8,sp:!1,gifts:[{pre:3e8,preDed:5e7,preTax:4e7}]}).cr===4e7&&e({est:15e8,sp:!1,gifts:[{pre:3e8,preDed:0,preTax:2e8},{pre:3e8,preDed:0,preTax:0}]}).cr===89905956,"inherit \uC2E0\uACE0\xB7\uC81C28\uC870"),console.assert(e({est:1e9}).pay===0&&e({est:1e9,sp:!1}).pay===8633e4&&e({est:2e9,fin:2e8,sp:!1}).calc===422e6&&e({est:1e9,sp:!1,fun:15e6,bong:7e6}).tot===985e6&&e({est:6e8,kids:0}).lump===2e8&&e({est:6e8,kids:0}).spd===6e8&&e({est:1e9,spAmt:6e8,kids:3}).spd===5e8&&e({est:1e9,spAmt:6e8,kids:3}).pay===0,"inherit")}let sp=!0,rpt="in";function calc(){const e=num($("est"));$("read").textContent=kor(e),$("spBox").hidden=!sp,$("parBox").hidden=num($("kids"))>0,$("g3").hidden=!($("pre2").value||$("pre3").value),$("g2").hidden=$("g3").hidden&&!$("pre").value;const t=e?inherit({est:e,fin:num($("fin")),debt:num($("debt")),fun:num($("fun")),bong:num($("bong")),sp,spAmt:$("spAmt").value?num($("spAmt")):null,kids:num($("kids")),par:num($("kids"))?0:num($("par")),gifts:["","2","3"].map(s=>({pre:num($("pre"+s)),preDed:num($("preDed"+s)),preTax:num($("preTax"+s))})),rpt}):null;for(const s of["tot","ded","lump","spd","fin","base","calc","cr","rep","pay"])$(`r-${s==="spd"?"sp":s}`).textContent=t?won(t[s]):"\u2013";$("l-lump").textContent=!t||t.lump===5e8?"\uC77C\uAD04\uACF5\uC81C":t.alone?"\uAE30\uCD08\uACF5\uC81C(\uBC30\uC6B0\uC790 \uB2E8\uB3C5 \uC0C1\uC18D)":"\uAE30\uCD08\uACF5\uC81C + \uC790\uB140\uACF5\uC81C",$("l-cap").textContent=t&&t.capped?"\uACFC\uC138\uAC00\uC561 \uD55C\uB3C4\uAE4C\uC9C0\uB9CC":"",$("l-rate").textContent=t&&t.base?`\uC138\uC728 ${t.r}% \uAD6C\uAC04`:"",$("w-sp").hidden=!sp,$("w-fin").hidden=!(t&&t.fin),$("w-cr").hidden=!(t&&t.cr);const n=$("tag");n.hidden=!(t&&!t.base),n.hidden||(n.textContent="\uC0C1\uC18D\uACF5\uC81C \uC774\uB0B4: 0\uC6D0")}$("sp").addEventListener("click",e=>{const t=e.target.closest("button")?.dataset.s;if(t){sp=t==="1";for(const n of $("sp").children)n.setAttribute("aria-pressed",n.dataset.s===t);calc()}}),$("rpt").addEventListener("click",e=>{const t=e.target.closest("button")?.dataset.v;if(t){rpt=t;for(const n of $("rpt").children)n.setAttribute("aria-pressed",n.dataset.v===t);calc()}});for(const e of["est","fin","debt","fun","bong","spAmt","pre","preDed","preTax","pre2","preDed2","preTax2","pre3","preDed3","preTax3"])money($(e),calc);for(const e of["kids","par"])$(e).addEventListener("input",()=>{const t=$(e);t.value=t.value.replace(/[０-９]/g,n=>String.fromCharCode(n.charCodeAt(0)-65248)).replace(/\D/g,"").replace(/^0+(?=\d)/,"").slice(0,2),calc()});calc(),matchMedia("(min-width: 960px)").matches&&$("est").focus();</script>
+</body>
+</html>
